@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css">
+</head>
+<body>
+<!--基础样式 基本的 增强样式 颜色 default 灰色 danger 红色 warning 警告 success 绿色 primary 蓝色 info 淡蓝色-->
+<div class="container">
+    <form>
+        <div class="form-group">
+            <label for="productName" class="control-label">商品名称</label>
+            <input type="text" id="productName" placeholder="请输入商品名称" class="form-control" v-model="product.productName">
+        </div>
+        <div class="form-group">
+            <label for="productPrice" class="control-label">商品商品价格</label>
+            <input type="text" id="productPrice" placeholder="请输入商品价格" class="form-control" v-model="product.productPrice">
+        </div>
+        <div class="form-group">
+            <button class="btn btn-primary" type="button" @click="add">添加</button>
+        </div>
+    </form>
+    <table class="table table-bordered">
+        <caption class="h2 text-danger">珠峰购物车</caption>
+        <tr>
+            <th class="text-center"><input type="checkbox" v-model="all" @click="checkAll"> 全选</th>
+            <th class="text-center">商品信息</th>
+            <th class="text-center">单价</th>
+            <th class="text-center">数量</th>
+            <th class="text-center">小计</th>
+            <th class="text-center">操作</th>
+        </tr>
+        <tr class="text-center" v-for="product in products">
+            <td><input type="checkbox" v-model="product.isSelected" @click="checkOne"></td>
+            <td>{{product.productName}}</td>
+            <td>{{product.productPrice}}</td>
+            <td>
+                <button @click="product.productCount--">-</button>
+                <input type="text" v-model="product.productCount">
+                <button @click="product.productCount++">+</button>
+            </td>
+            <td>{{product.productPrice*product.productCount}}</td>
+            <td><button class="btn btn-danger btn-sm" @click="remove(product)">删除</button></td>
+        </tr>
+        <tr>
+            <td colspan="6">总价 {{total()}}</td>
+        </tr>
+    </table>
+</div>
+<script src="node_modules/vue/dist/vue.js"></script>
+<script src="node_modules/vue-resource/dist/vue-resource.js"></script>
+<!--vue-resource 会默认在当前实例上增加一个$http的属性-->
+<script>
+    let vm = new Vue({
+        el:'.container',
+        data:{
+            all:false,
+            product:{isSelected:true,productCount:1,productName:'',productPrice:''},
+            products:[]
+        },
+        created(){ //当实例创建之后 就会执行的方法,ajax请求数据的方法，钩子方法默认的this也是当前实例
+           this.$http.get('./product.json').then(function(res){
+               this.products = res.body; //获取数据渲染页面
+           });
+        },
+        methods:{
+            //删除
+            remove(product){//product 表示当前点击的是哪一个商品
+                this.products =  this.products.filter(item=>item!==product);
+            },
+            //全选全不选
+            checkAll(){
+                this.products.forEach(item=>item.isSelected=this.all);
+            },
+            checkOne(){
+                //将数组中循环 有false 则all是false 否则是true
+                this.all = this.products.every(item=>item.isSelected);
+            },
+            total(){ //函数 {{total()}} 在vue里是一个错误写法,只要数据变化视图就会执行此函数
+                //reduce 累计商品数量*价格,right是从右边向左边
+                return this.products.reduceRight((prev,next,index,arr)=>{
+                    return prev+next.productCount*next.productPrice;
+                },0);
+            },
+            //添加
+            add(){
+                this.products.push(this.product);
+                //如果将对象赋予成{} 下次修改时 数据是不会被响应的
+                this.product = {
+                    isSelected:true,
+                    productCount:1,
+                    productName:'',
+                    productPrice:''
+                }
+            }
+        }
+    });
+</script>
+</body>
+</html>

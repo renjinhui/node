@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="app">
+    <handsome></handsome>
+    <beautiful></beautiful>
+</div>
+<script src="node_modules/vue/dist/vue.js"></script>
+<script>
+    //1.使用的顺序有三点 1）引入  2)注册组件 3）使用组件
+    let handsome = {
+        template:'<h1>{{msg}}</h1>',
+        data(){return {msg:'我很英俊'}}
+    };
+    let beautiful = {
+        template:'<h1>我很漂亮</h1>'
+    };
+    let vm = new Vue({ //根实例
+        el:'#app',
+        components : { //使用聚局部组件必须注册 否则不能使用
+            handsome,
+            beautiful
+        }
+    })
+    //实现一个beautiful组件
+</script>
+</body>
+</html>

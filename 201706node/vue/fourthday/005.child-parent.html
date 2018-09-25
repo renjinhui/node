@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="app"></div>
+<script src="node_modules/vue/dist/vue.js"></script>
+<script>
+    //组件之间的通信 1.父与子 2.子与父  3.兄弟之间
+    //父亲-> 儿子 默认组件是独立的相互不能引用数据，可以通过属性的方式传递给儿子
+    let vm = new Vue({
+        el:'#app',
+        data:{money:100},//根实例数据都是对象，组件中都是函数
+        template:'<child :m="money" o="美女"/>',
+        components:{
+            child:{
+                //如果传递多个可以数组中写多个
+                props:['m','o'],//这个m会挂载在儿子的实例上，相当于挂在了data上,父亲的数据儿子不能更改
+                computed:{
+                  b(){ return '大'+this.o} //this当前的是当前组件的实例
+                },
+                template:'<div>child {{m}} {{b}}</div>'
+            }
+        }
+    })
+</script>
+</body>
+</html>

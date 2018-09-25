@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="app"></div>
+<script src="node_modules/vue/dist/vue.js"></script>
+<script>
+    let vm = new Vue({
+        el:'#app',
+        template:'<div>父{{msg}}<child :a.sync="msg"/></div>',
+        data:{
+            msg:'美女'
+        },
+        components:{
+            child:{
+                props:['a'], //<comp :foo="bar" @update:foo="val => bar = val"></comp>
+                template:'<div>child {{a}} <button @click="change">换</button></div>',
+                methods:{
+                    change(){ //固定的写法
+                        this.$emit('update:a','丑女');
+                    }
+                }
+            }
+        }
+    })
+</script>
+</body>
+</html>

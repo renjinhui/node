@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css">
+    <style>
+        .del{text-decoration: line-through;color: #b0cebf
+        }
+        [v-cloak]{display: none}
+    </style>
+</head>
+<body>
+<div id="app" >
+    <div class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <!--标题-->
+            <div class="navbar-header">
+                <a class="navbar-brand">TodoList</a>
+            </div>
+            <!--导航-->
+            <div></div>
+        </div>
+    </div>
+    <!--cloak要求 自己增加一个默认样式 就是display:none,当加载完成后会将这个属性移除掉-->
+    <div class="container" v-cloak>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="col-md-6 col-md-offset-3">
+                    <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <p class="h4 text-danger">亲 你有{{count}}件事要办理</p>
+                        <input type="text" class="form-control" v-model="todo.title" @keyup.13="addTodo" placeholder="请输入待完成事项">
+                    </div>
+                    <div class="panel-body">
+                        <ul class="list-group">
+                            <li class="list-group-item" v-for="todo in newTodos" @dblclick="change(todo)">
+                                <!--当前点击的 和循环的这一项相等 说明当前要变成输入框
+                                current是当前点击的 如果和循环的比较不相等说明不变成输入框
+                                -->
+                                <div v-show="current!=todo">
+                                    <input type="checkbox" v-model="todo.isSelected">
+                                    <!--动态绑定样式-->
+                                    <span :class="{del:todo.isSelected}">{{todo.title}}</span>
+                                    <button class="btn btn-danger btn-xs pull-right" @click="remove(todo)">&times;</button>
+                                </div>
+                                <!--自定义指令 v-model v-bind v-on-->
+                                <input type="text" v-model="todo.title" v-show="current==todo" @keyup.13="save" @blur="save" @keyup.esc="cancel" v-auto-focus="current==todo">
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="panel-footer">
+                        <ul class="nav nav-pills">
+                            <li :class="{active:hashValue=='all'}"><a href="#all">全部</a></li>
+                            <li :class="{active:hashValue=='finish'}"><a href="#finish">已完成</a></li>
+                            <li :class="{active:hashValue=='unfinish'}"><a href="#unfinish">未完成</a></li>
+                        </ul>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="node_modules/vue/dist/vue.js"></script>
+<script src="todo.js"></script>
+<script>
+    //1. 实现将数据进行绑定
+    //2. 实现增加功能
+    //3. 实现删除功能
+    //4. 计算有多少件事要干
+    //5. 实现可编辑列表
+    //6. 实现筛选功能
+    //7. 实现本地存储功能
+
+    // 路由 根据不同的路径 返回不同的内容
+    // 不会跳转页面
+    // 通过更改hash值 区分类型
+    // 通过h5的api实现路由的切换history.pushState('','','/b')；刷新时会导致页面404，如果要使用 需要服务端支持
+
+
+</script>
+</body>
+</html>

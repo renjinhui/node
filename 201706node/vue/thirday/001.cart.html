@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css">
+</head>
+<body>
+<div id="app">
+    <div class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a href="" class="navbar-brand">购物车</a>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="col-md-3" v-for="(product,index) in products">
+                    <div class="panel panel-danger text-center" draggable="true" @dragstart="start($event,index,product)">
+                        <div class="panel-heading">{{product.productName}}</div>
+                        <div class="panel-body">
+                            <img :src="product.productCover" width="100px" height="120px" ref="img">
+                        </div>
+                        <div class="panel-footer">价格 {{product.productPrice}}</div>
+                    </div>
+                </div>
+
+                <table class="table table-bordered">
+                    <tr>
+                        <td>商品名称</td>
+                        <td>商品价格</td>
+                        <td>商品数量</td>
+                        <td>商品小计</td>
+                    </tr>
+                    <tr v-for="cart in carts">
+                        <td>{{cart.productName}}</td>
+                        <td>{{cart.productPrice | toInit(1)}}</td>
+                        <td>{{cart.count}}</td>
+                        <td>{{cart.count*cart.productPrice | toInit(1)}}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">总价 {{total | toInit(2) }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="cart" @dragover.prevent @drop="drop">
+        <i class="glyphicon glyphicon-shopping-cart"></i>
+        <span>{{count}}</span>
+    </div>
+</div>
+<style>
+    .cart{position: fixed;width: 50px;height: 50px;top: 400px;right: 0;background: orangered;color: #fff;text-align: center;line-height: 25px;}
+    .cart span{display: block}
+</style>
+<script src="node_modules/vue/dist/vue.js"></script>
+<script src="node_modules/axios/dist/axios.js"></script>
+<script>
+    let vm = new Vue({
+        el:'#app',
+        filters:{ //过滤器
+            toInit(input,param1){ //原数据 ，返回什么 就变成什么 但是原数据并不会改变
+                return '£'+input.toFixed(param1);
+            }
+        },
+        watch:{ //watch默认监控一层
+            carts:{
+                handler(){
+                    localStorage.setItem('carts',JSON.stringify(this.carts));
+                },
+                deep:true
+            }
+        },
+        data:{
+            products:[],
+            item:{},
+            carts:[]
+        },
+        created(){
+            this.getData(); //页面加载先获取数据
+            //取出localeStorage中的内容 如果为null  默认就是空数组
+            this.carts = JSON.parse(localStorage.getItem('carts')) || this.carts;
+        },
+        computed:{
+            total(){
+                return this.carts.reduce((prev,next)=>{
+                    return prev+next.count*next.productPrice;
+                },0);
+            },
+            count(){
+                return this.carts.reduce((prev,next)=>{
+                    return prev+next.count;
+                },0);
+            }
+        },
+        methods:{
+            getData(){
+                axios.get('./carts.json').then((res)=>{ //成功会内部会自动执行resolve(xhr.response)
+                    this.products = res.data;
+                },(err)=>{
+                    console.log(err);
+                });
+            },
+            start(e,index,product){ //如果多个ref 同名 则会以数组形式存在
+                e.dataTransfer.setDragImage(this.$refs.img[index],0,0);
+                this.item = product;
+            },
+            drop(){ //将拖拽的元素放置到数组中
+                //如果当前数组中包含着 正拖拽的id 表示购物车已经有这个商品了，应该累加数量
+                if(this.carts.some(item=>item.id ===this.item.id)){
+                    //修改当前id 让他的个数累加
+                    this.carts.forEach(item=>{
+                        if(item.id === this.item.id){ //如果id匹配到了 则累加
+                            item.count++;
+                        }
+                    });
+                }else{
+                    //将当前项 增加一个count属性
+                    let obj = {}; //$.extend   Object.assige可以实现对象继承，将后面的对象赋给前面
+                    Object.assign(obj,this.item,{count:1});
+                    this.carts.push(obj);
+//                    this.carts.push({...this.item,count:1});
+                }
+            }
+        }
+    });
+</script>
+</body>
+</html>

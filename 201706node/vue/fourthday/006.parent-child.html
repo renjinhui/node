@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="app"></div>
+<!--父亲拿儿子的属性，通过的就是发布订阅，父亲声明一个方法，儿子触发父亲的方法-->
+<script src="node_modules/vue/dist/vue.js"></script>
+<script>
+    let vm = new Vue({
+                                    // this.$on('child',say)自定义事件
+        template:'<div>父 <child @child="say"></child></div>',
+        methods:{
+            say(data){
+                console.log(data);
+            }
+        },
+        components:{
+            child:{
+                created(){
+                    this.$emit('child',this.msg);
+                },
+                data(){
+                    return {msg:'我饿了'}
+                },
+                template:'<div>子</div>'
+            }
+        }
+    });
+    //想实现的是父亲将数据传递给儿子，儿子改了自己的数据，在通知父亲自己改
+    vm.$mount('#app'); //手动将vue挂载载app上
+</script>
+</body>
+</html>

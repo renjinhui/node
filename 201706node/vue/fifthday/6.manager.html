@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="node_modules/animate.css/animate.css">
+</head>
+<body>
+<div id="app">
+    <div class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand">管理系统</a>
+            </div>
+            <ul class="navbar-nav nav">
+                <li><router-link to="/home">首页</router-link></li>
+                <li><router-link to="/list">列表</router-link></li>
+                <li><router-link to="/profile">个人中心</router-link></li>
+                <li><router-link to="/login">登录</router-link></li>
+            </ul>
+        </div>
+    </div>
+    <div class="container" style="position: relative">
+        <!--<keep-alive> 内置的组件不让组件销毁，此时created方法中不会再次执行，相当于做了缓存-->
+        <!--在同一时间内可以看到两个动画-->
+        <transition enter-active-class="animated slideInRight" leave-active-class="animated slideOutLeft">
+            <router-view style="position: absolute;top:0;left: 0;width: 100%"></router-view>
+        </transition>
+    </div>
+</div>
+<template id="home">
+    <div>
+        <router-link to="/home/article/1">文章1</router-link>
+        <router-link to="/home/article/2">文章2</router-link>
+        <router-view></router-view>
+    </div>
+</template>
+<template id="list">
+    <div>
+        <ul class="list-group">
+            <li class="list-group-item" v-for="list in lists">{{list.title}}</li>
+        </ul>
+    </div>
+</template>
+<template id="profile">
+    <div class="row">
+        <div class="nav nav-stacked col-md-3">
+            <li><router-link to="/profile/about">关于我</router-link></li>
+        </div>
+        <router-view class="col-md-9"></router-view>
+    </div>
+</template>
+<template id="login"><div>登录</div></template>
+<script src="node_modules/axios/dist/axios.js"></script>
+<script src="node_modules/vue/dist/vue.js"></script>
+<script src="node_modules/vue-router/dist/vue-router.js"></script>
+<script>
+    //首页 列表页 个人信息页 登陆
+    let Home = {template:'#home'};
+    let List = {
+        template:'#list',
+        data(){
+            return {lists:[]}
+        },
+        beforeRouteEnter(to,from,next){ //在路由进入之前
+            //默认相当于可以向下执行，看你是否调用了next，没有调用next表示不继续
+            //在这里可以获取数据 获取成功后渲染组件，好处不会有闪烁问题，但是在这之前路由不会发生改变 等待调用next才会进行改变
+            axios.get('./list.json').then((res)=>{
+                setTimeout(()=>{
+                    //this.lists = res.data; //此时获取不到this
+                    next(vm=>{
+                        vm.lists = res.data;
+                    });//next中可以传入回调函数，当created执行后会调用这个回调函数，并且将this传递进去
+                },20);
+            });
+        },
+        created(){ //目前只能组件中获取数据,在组件中获取数据,缺陷就是先跳转了 后加载
+            /*axios.get('./list.json').then((res)=>{
+                setTimeout(()=>{
+                    this.lists = res.data;
+                },3000);
+            });*/
+        }
+    };
+    let Profile = {template:'#profile'};
+    let Login = {template:'#login'};
+    let AboutMe = {template:'<div>关于我</div>'};
+    let Article = {
+        template:'<div>{{msg}}</div>',
+        data(){return {msg:''}},
+        created(){ //只触发一次
+            this.getData();
+        },
+        watch:{
+            $route(){ //路径参数变化不会触发beforeRouteEnter唯一的方式就是监控$route属性
+               this.getData();
+            }
+        },
+        methods:{
+            getData(){
+                let id = this.$route.params.aid;
+                axios.get(`./article${id}.json`).then(res=>{
+                    this.msg = res.data.content;
+                });
+            }
+        }
+    };
+    let router = new VueRouter({
+        //mode:'history',
+        //仅当 前进后退时 才能实现记住位置 并且模式时h5的模式
+        scrollBehavior (to, from, savedPosition) {
+            if (savedPosition) {
+                return savedPosition
+            } else {
+                return { x: 0, y: 0 }
+            }
+        },
+        routes:[
+            {
+                path:'/home',
+                component:Home,
+                children:[
+                    //实现通过路径参数请求不同的数据
+                    {path:'article/:aid',component:Article}
+                ]
+            },
+            {path:'/list',component:List},
+            //如果sessionStorage 中的login的值是1 可以访问 如果是0则跳转到登录页
+            {path:'/profile',component:Profile,
+                children:[
+                    {path:'about',component:AboutMe}
+                ],
+                meta:{needLogin:true} //相当于填了一条备注
+            },
+            //路由元信息
+            {path:'/login',component:Login},
+        ]
+    });
+    //全局钩子 只要路由切换就可以拦截到
+    router.beforeEach(function (to,from,next) {
+        console.log(to);//可以去matched属性中看匹配的路由中是否有needLogin字段，如果有继续验证是否登陆，如果没登录去登录页
+        let flag = to.matched.some(route=>route.meta.needLogin);//如果有需要登陆的flag值就是true
+        if(flag){
+            if(sessionStorage.getItem('login')==='0'){
+                next({path:'/login'});//跳转到login，没登录
+            }else{
+                next();//登陆过了
+            }
+        }else{ //不需要登录 继续访问
+            next(); //如果ok 要调用next否则就卡死在当前路径了
+        }
+    });
+    let vm = new Vue({
+        el:'#app',
+        router
+    });
+</script>
+</body>
+</html>

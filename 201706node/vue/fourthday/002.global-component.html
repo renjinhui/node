@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="app">
+    <my-handsome></my-handsome>
+</div>
+<script src="node_modules/vue/dist/vue.js"></script>
+<!--正常开发中我们不会使用全局组件，写一些新的包，或者一些全局的功能loading-->
+<!--结构 html 行为数据methods,data 样式 .vue文件-->
+<!--一般情况下html使用短横线隔开命名法，js中使用驼峰，上下一样即可-->
+<!---->
+<script>
+    //在vue中一个对象就是一个组件
+    //1.使用组件的步骤 声明组件并且引入到当前页面 2.在组件的父级模板中调用这个组件
+    Vue.component('my-handsome',{
+        template:'<h1>{{msg}}</h1>',//只能一个root element，而且不直接放置文本节点
+        data(){ //在组件中data是函数，目的是为了不受别人的干扰，因为组件是独立的
+            return {msg:'我很英俊'} //这个对象可以用来定义数据
+        }
+    });
+    let vm = new Vue({
+        el:'#app',
+    });
+</script>
+
+</body>
+</html>

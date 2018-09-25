@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="app">
+    <!--小胡子  moustache-->
+    {{msg}}
+</div>
+<script src="node_modules/vue/dist/vue.js"></script>
+<!--使用vue 引入vue后会给你一个Vue类-->
+<script>
+    //html css js
+    //vm会代理data属性
+    let vm = new Vue({
+        el:'#app',//querySelector,不兼容ie8以下都不兼容
+        data:{
+            msg:'hello world',
+        }
+    });//靠的是数据驱动 数据json + html
+</script>
+</body>
+</html>

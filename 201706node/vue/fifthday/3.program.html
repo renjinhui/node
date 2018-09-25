@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="app">
+    <button @click="goHome">去首页</button>
+    <button @click="goList">去列表</button>
+    <router-view></router-view>
+</div>
+<script src="node_modules/vue/dist/vue.js"></script>
+<script src="node_modules/vue-router/dist/vue-router.js"></script>
+<script>
+    let Home = {template:'<div>Home</div>'};
+    let List = {template:'<div>List</div>'};
+    const router = new VueRouter({
+        routes:[
+            {path:'/',component:Home},
+            {path:'/list',component:List}
+        ]
+    });
+    let vm = new Vue({
+        el:'#app',
+        methods:{
+          //编程式导航
+          goHome(){
+              //页面跳转 push是增加到历史管理
+            //this.$router.history.push('/')
+              this.$router.history.go(-1);//go表示前进和后退
+          },
+          goList(){
+              // replace是将当前的历史管理替换掉
+            this.$router.history.replace('/list')
+          }
+        },
+        router //在所有组件的实例上添加俩属性 this.$route 属性 this.$router 方法
+    })
+</script>
+</body>
+</html>

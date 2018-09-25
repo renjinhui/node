@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css">
+</head>
+<body>
+<!--computed 看起来是函数 其实是属性，method表示的就是点击触发的事件，一个封装好的函数 {{total()}}一般会用computed替换掉
+    1） 计算 获取 根据别人的值计算而来的 设置 当给这个值赋值可能影响其他人 getter setter  axios 获取数据 默认不会挂载载实例上,前后端通用
+-->
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-bordered">
+                <tr>
+                    <th><input type="checkbox" v-model="all">全选</th>
+                    <th>商品名称</th>
+                    <th>商品单价</th>
+                    <th>商品数量</th>
+                </tr>
+                <tr v-for="product in products">
+                    <td><input type="checkbox" v-model="product.isSelected"></td>
+                    <td>{{product.productName}}</td>
+                    <td>{{product.productPrice}}</td>
+                    <td><input type="text" v-model="product.productCount"></td>
+                </tr>
+                <tr >
+                    <td colspan="4">总价: {{total}}</td>
+                </tr>
+            </table>
+            <!--vue-validate 校验库-->
+            <input type="text" placeholder="请输入用户名" v-model="val">
+            <div>{{check}}</div>
+        </div>
+    </div>
+</div>
+<script src="node_modules/vue/dist/vue.js"></script>
+<script src="node_modules/axios/dist/axios.js"></script>
+<script>
+//   Vue.prototype.$http = axios;
+    let vm = new Vue({
+        el:'.container',
+        data:{
+            val:'',
+            products:[]
+        },
+        methods:{}, //只提供方法的，
+        computed:{ //computed不支持异步。
+            check(){ //可以校验用户输入的内容
+                if(this.val.length<6){
+                    return '账号太短'
+                }else if(this.val.length>8){
+                    return '账号太长'
+                }else{
+                    return '';
+                }
+            },
+            all:{
+                get(){ //根据别人计算自己
+                     return this.products.every(item=>item.isSelected);
+                },
+                set(val){ //给自己赋值 控制别人
+                    this.products.forEach(item=>item.isSelected = val);
+                }
+            },
+            total(){ //默认调用的是当前total属性的get方法
+                //只有当价格和数量 发生变化 才会重新执行total的get方法
+                return this.products.reduce((prev,next,index,arr)=>{
+                    return prev+next.productCount*next.productPrice
+                },0);
+            }
+        },
+        created(){
+            axios.get('./product.json').then((res)=>{ //this=>window
+                this.products = res.data; //data就是最后的结果
+            });
+        }
+    })
+</script>
+</body>
+</html>

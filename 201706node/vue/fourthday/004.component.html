@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="app"></div>
+<!-- vue提供的 没有任何实际意义可以通过id引用-->
+<template id="banana">
+    <div>{{name}}</div>
+</template>
+<template id="fruit">
+    <div>水果 <banana></banana>  </div>
+</template>
+<script src="node_modules/vue/dist/vue.js"></script>
+<script>
+    //食物 -> 水果 -> 香蕉  .vue文件
+    let banana = {
+        template:'#banana',
+        data(){
+            return {name:'香蕉'}
+        }
+    };
+    let fruit = {
+        template:'#fruit',
+        components:{
+            banana
+        }
+    };
+    let vm = new Vue({
+        el:'#app',
+        template:'<div>食物 <fruit/></div>',
+        components:{
+            fruit
+        }
+    })
+</script>
+</body>
+</html>

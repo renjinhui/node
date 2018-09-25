@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="app">
+    <!--v-model会先将数据绑定到输入框中，当输入框中的内容变化会影响数据的变化，视图会再次刷新，见到input就加v-model-->
+    <input type="text" v-model="msg">
+    <!--v-once里面的内容 不会再次监控数据的变化-->
+    原值： <div v-once>{{msg}}</div>
+    <!--v-html可以将内容转化成html标签插入到div中-->
+    <div v-html="msg"></div>
+    <!--v-text和{{}}是等价的 属性是不会被用户看到的，编译好后再插入到div中 防止闪烁问题-->
+    <div v-text="msg"></div>
+</div>
+<script src="node_modules/vue/dist/vue.js"></script>
+<script>
+    //数据驱动视图  视图可以改变数据
+    //MVC   controller -> model -> view
+    //MVVM model view viewModel
+    //MVVM模式只针对可以编辑可改变的元素 input textarea
+    //vm 根实例
+    let vm = new Vue({
+        el:'#app',
+        data:{
+            msg:'<h1>hello</h1>'
+        }
+    });
+</script>
+</body>
+</html>

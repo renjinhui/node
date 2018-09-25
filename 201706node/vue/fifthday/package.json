@@ -1,0 +1,20 @@
+{
+  "name": "fifthday",
+  "version": "1.0.0",
+  "description": "- axios 也支持在服务端使用\r ```\r npm install vue bootstrap vue-router axios  animate.css --save\r ```",
+  "main": "index.js",
+  "dependencies": {
+    "animate.css": "^3.5.2",
+    "axios": "^0.16.2",
+    "bootstrap": "^3.3.7",
+    "vue-router": "^2.7.0",
+    "vue": "^2.4.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

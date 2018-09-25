@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="app"></div>
+<script src="node_modules/vue/dist/vue.js"></script>
+<script>
+    let eventBus = new Vue;
+    //eventBus 没人用 1) 使用起来不好管理 2） 命名冲突而且复杂   -> vuex统一状态管理
+    let C = {
+        template:'<div>{{val}} <button @click="change">变C</button></div>',
+        data(){
+            return {val:'C'}
+        },
+        created(){
+            eventBus.$on('changeD', (data) => { //防止this错乱必须采用箭头函数
+                this.val = data;
+            });
+        },
+        methods:{
+            change(){
+                eventBus.$emit('changeC','C')
+            }
+        }
+    };
+    let D = {
+        created(){
+            eventBus.$on('changeC',(data)=>{
+                this.val = data;
+            })
+        },
+        template:'<div>{{val}} <button @click="change">变D</button></div>',
+        data(){
+            return {val:'D'}
+        },
+        methods:{
+            change(){
+                eventBus.$emit('changeD','D');
+            }
+        }
+    };
+    let vm = new Vue({ //1.找共同的父级 实现数据交互，非常复杂 不采用
+        el:'#app',
+        template:'<div><C></C><D></D></div>',
+        components:{
+            C,D
+        }
+    })
+</script>
+</body>
+</html>

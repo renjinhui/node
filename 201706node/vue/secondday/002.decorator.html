@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        .red{color:red}
+        .back1{background: red}
+        .back2{background: blue}
+    </style>
+</head>
+<body>
+<div id="app">
+    <!--{{}}取值表达式 一般只用在html标签内 -->
+    <!--v-bind可以简写成:的形式 如果以后数据需要使用动态绑定则使用:的形式-->
+    <!--属性 props-->
+    <div :title="msg">我好帅</div>
+    <img :src="href" :width="w" :height="h">
+    <!--class style可以动态绑定 写法比较特殊 可以使用对象和数组 -->
+    <!--动态和静态生效的是根据前后顺序，看的的是权重-->
+    <div :class="{back2:flag}" class="back1">vue</div>
+    <!--数组中表示两个都生效,可以再数组中使用变量-->
+    <div :class="['red','back2']">哈哈</div>
+
+    <div :style="{fontSize:'40px',backgroundColor:'yellowgreen'}">行内样式</div>
+    <div :style="[{color:'red'},{background:'orange'}]">行内</div>
+    <div :class="{true:'red',false:'back1'}[flag]">三元</div>
+</div>
+<script src="node_modules/vue/dist/vue.js"></script>
+
+<script>
+    let vm = new Vue({
+        el:'#app',
+        data:{
+            flag:true,
+            msg:'确实',
+            href:'https://cn.vuejs.org/images/logo.png',
+            w:'100px',
+            h:'100px'
+        }
+    })
+</script>
+</body>
+</html>

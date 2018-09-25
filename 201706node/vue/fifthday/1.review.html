@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css">
+</head>
+<body>
+<!--可复用的panel-->
+<div id="app">
+    <!--如果循环组件不加key属性 默认会有警告提示-->
+    <panel :type="panel.color" v-for="(panel,index) in panels" :key="index" @say-color="say">
+        <!--使用v-if判断数据是否存在不存在则dom移除-->
+        <div slot="heading" v-if="panel.title">{{panel.title}}</div>
+        <div slot="body" v-html="panel.content"></div>
+    </panel>
+</div>
+<template id="panel">
+    <div class="panel" :class="sty">
+        <div class="panel-heading">
+            <slot name="heading">README</slot>
+        </div>
+        <div class="panel-body">
+            <slot name="body"></slot>
+        </div>
+        <!--实现点击触发父级的事件，将颜色传递给父级 父级将结果弹出-->
+        <div class="panel-footer"><button @click="tip">点我弹颜色</button></div>
+    </div>
+</template>
+<script src="node_modules/vue/dist/vue.js"></script>
+<script>
+    let panel = { //定义一个panel组件
+        template:'#panel', //引入模板id叫panel的组件
+        props:['type'],//定义接受的属性 this.type='success'
+        computed:{ //将父组件传递的属性进行包装
+            sty(){return 'panel-'+this.type}
+        },
+        methods:{
+            tip(){ //emit方法不能出现大写字符否则匹配不到
+                this.$emit('say-color',this.type);
+            }
+        }
+    };
+    let vm = new Vue({
+        methods:{
+          say(color){
+              alert(color);
+          }
+        },
+        el:'#app',
+        data:{
+            panels:[
+                {color:'primary',title:'angular进阶',content:'<p>这是一篇很好的文章 <span>重点</span></p>'},
+                {color:'danger',title:'vue进阶',content:'<p>这是一篇不好的文章 <span>重点</span></p>'},
+                {color:'success',content:'<p>这是一篇非常好的文章 <span>重点</span></p>'}
+            ]
+        },
+        components:{ //注册组件
+            panel
+        }
+    })
+</script>
+</body>
+</html>

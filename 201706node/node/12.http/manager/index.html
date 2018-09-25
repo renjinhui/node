@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css">
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="col-md-6">
+                <form>
+                    <div class="form-group">
+                        <label for="username" class="control-label">用户名</label>
+                        <input type="text" class="form-control" id="username">
+                    </div>
+                    <div class="form-group">
+                        <label for="password" class="control-label">密码</label>
+                        <input type="text" class="form-control" id="password">
+                    </div>
+                    <div class="form-group">
+                        <button type="button" class="btn btn-primary add">添加</button>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-6">
+                <ul class="list-group">
+                    <li class="list-group-item"> 姓名:珠峰 密码:admin</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    let oUl = document.querySelector('.list-group'); //querySelector没有dom映射
+    let username = document.getElementById('username');
+    let password = document.getElementById('password');
+    function fetchUser(type,data) {
+        // body代表的是请求体
+        let params = {};
+        if(type.toLowerCase()==='post'){
+            params = {
+                method:type,
+                headers:{
+                    accept:'application/json', //约束后台返回的数据类型
+                    'Content-Type':'application/json' //请求的类型是json类型
+                },
+                body:JSON.stringify(data) //请求体
+            }
+        }else{
+            params = {
+                method:type,
+                headers:{
+                    accept:'application/json'
+                }
+            }
+        }
+        return fetch('/user',params).then(res=>res.json())
+    }
+    function showList(data) {
+        let str = '';
+        data.forEach(item => {
+            str += `<li class="list-group-item">姓名:${item.username} 密码:${item.password}
+                    <button class="btn btn-danger" data-uid="${item.id}">&times;</button>
+            </li>`;
+        });//循环数据将数据展示到ul里
+        oUl.innerHTML = str;
+    }
+    //获取用户
+    fetchUser('get').then(data=>{
+        showList(data);
+    });
+    //增加数据，点击按钮 发送增加的请求
+    document.querySelector('.add').addEventListener('click',function () {
+        fetchUser('post',{username:username.value,password:password.value}).then(data=>{
+            showList(data);alert('添加成功');
+        })
+    },false);
+    //删除操作
+    oUl.addEventListener('click',function (e) {
+        if(e.target.tagName === 'BUTTON'){ //e.target.dataset获取当前元素上以data-开头的自定义属性
+            alert(e.target.dataset.uid);
+            // /user?id = 1 更改fetchUser方法 实现可以通过参数传递id，实现删除和修改
+        }
+    },false);
+</script>
+</body>
+</html>

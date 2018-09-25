@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="app">
+    <button @click="msg='你很帅'">你很帅</button>
+    <button @click="msg='你很美'">你很美</button>
+</div>
+<script src="node_modules/vue/dist/vue.js"></script>
+<script>
+    //当一个值变化了 我就弹出一句话
+    let vm = new Vue({
+        el:'#app',
+        data:{
+            msg:'很handsome'
+        },
+        // 当数据变了 我就存到localStorage中
+        watch:{ //监控观察 简单值变了就干一些事情 支持异步 因为没有返回值
+           msg(){ //只要msg值发生了变化 就会触发此函数
+               localStorage.setItem('aaa',this.msg);
+           }
+        }
+        //watch,computed method 谈谈你的理解
+    });
+</script>
+</body>
+</html>

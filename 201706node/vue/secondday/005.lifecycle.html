@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="app">
+    <!--ref的作用是给一个元素添加一个别名 可以再this.$refs上拿到这个元素-->
+    <div ref="ok">你好</div>
+</div>
+<script src="node_modules/vue/dist/vue.js"></script>
+<!--组件的声明周期 根实例可以看成一个组件-->
+<script>
+    // 钩子函数
+    let vm = new Vue({
+        data:{msg:'hello'},
+        //template只能有一个根元素，而且不能是文本
+        template:'<div><p>{{msg}}</p></div>',
+        beforeCreate(){ //创建之前，一般不使用
+            alert('beforeCreate')
+        },//数据没有被挂载 方法也没有挂载
+        created(){ //发送ajax请求，请求是异步的，会直接走到beforeMount中
+            alert('created');
+        },
+        // 判断有没有el属性，看有没有template,有就用template没有就用id=app内部元素渲染
+        beforeMount(){ //用不到 没有实际意义;
+            alert('beforeMount')
+        },
+        mounted(){//获取真实dom元素 this.$refs.ok
+            alert('mounted');
+        },
+        beforeUpdate(){ //当页面上的数据发生变化会执行此方法，前提是页面用到了这个数据
+            alert('beforeUpdate')
+        },
+        updated(){
+            alert('updated')
+        },
+        beforeDestroy(){
+            alert('beforeDestroy')
+        },
+        destroyed(){
+            alert('destroyed');
+        }
+    });
+    //常用的有 created mounted beforeDestroy
+    vm.$mount('#app');//挂载元素 手动挂载
+    vm.$destroy(); //你去死吧,一般不会手动调用
+</script>
+</body>
+</html>

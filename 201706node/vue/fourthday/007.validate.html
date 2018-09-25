@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="app"></div>
+<script src="node_modules/vue/dist/vue.js"></script>
+<script>
+    //如果校验不通过，也会渲染到页面上，只是给开发者一些提示
+    let vm = new Vue({
+        el:'#app',
+        data:{money:'100'}, //如果传递的是boolean 或者数字 需要加: 否则会被认为是字符串
+        template:'<child o="美女"/>', //不会使用上面的id='app'会用这个元素替换调app
+        components:{
+            child:{
+                props:{
+                    m:{
+                        type:[Number,Boolean,Array,String,Object],
+                        //default:'500',//属性没有传递时会采用默认属性，m=''这也是传了 只是为空
+                        required:true//必须传递 不能和default连用
+                    },
+                    o:{
+                        validator(val){//val代表传递过来的内容,自定义验证器
+                            return val === '美女';
+                        }
+                    }
+                }, //对象形式的props可以进行校验
+                computed:{
+                  b(){ return '大'+this.o} //this当前的是当前组件的实例
+                },
+                template:'<div>child {{m}} {{b}}</div>'
+            }
+        }
+    })
+</script>
+</body>
+</html>

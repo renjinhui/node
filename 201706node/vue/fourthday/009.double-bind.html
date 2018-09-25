@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="app"></div>
+<script src="node_modules/vue/dist/vue.js"></script>
+<script>
+    //儿子触发父亲的一个方法，将最新的值传递给父亲，父亲更改后，属性会重新传递，儿子会刷新
+    let vm = new Vue({
+        el:'#app',
+//        @update:more="data=>money=data"  this.$on
+        template:'<div>parent:{{money}}<child :m.sync="money"/></div>',
+        data:{
+            money:100
+        },
+        components:{
+            child:{
+                props:{m:{}},
+                template:'<div>child {{m}} <button @click="more">多要钱</button></div>',
+                methods:{
+                    more(){
+                        this.$emit('update:m',1000);
+                    }
+                }
+            }
+        }
+    })
+</script>
+</body>
+</html>

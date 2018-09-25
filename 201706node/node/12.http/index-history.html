@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!--服务端中html引用路径不支持../ 或者./-->
+    <link rel="stylesheet" href="/index.css">
+</head>
+<body>
+<!--每一秒去服务端获取下最新的时间 /clock-->
+<script>
+    //通过ajax 获取/clock下的内容将数据展现到页面上
+    //1.创建xhr对象 2.open 3.监听状态改变 4. send发送
+    
+    
+    function ajax({url='',type='get',dataType='text',async=true,data=null}) { //参数赋予默认值
+        return new Promise((resolve,reject)=>{
+            let xhr = new XMLHttpRequest();
+            xhr.open(type,url,async);
+            xhr.responseType = dataType;
+            xhr.onload = function () {
+                resolve(xhr.response);
+            };
+            xhr.onerror = function (err) {
+                reject(err);
+            };
+            xhr.send(data);
+        });
+    }
+    ajax({
+        url:'/clock',
+       // type:'get',
+        dataType:'json',
+       // async:true,
+       // data:JSON.stringify({name:1})
+    }).then(function (data) {
+        document.write(data.time);
+    }).catch(function (err) {
+        console.log(err);
+    })
+    
+    
+    
+    
+    
+    /*let xhr = new XMLHttpRequest();
+    xhr.open('get','/clock',true);
+    //如果设置了服务端返回的类型是json，只能使用xhr.response
+    xhr.responseType = 'json';
+    xhr.onload = function () { // 200 && 4
+        document.write(this.response.time);
+    };
+    xhr.send();
+    */
+</script>
+</body>
+</html>

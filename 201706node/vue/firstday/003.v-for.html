@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="app">
+    <!--v-for要循环谁就将他写在谁的身上-->
+    <!--如果一个值 就是value of 两个 (value,index) of-->
+    <!--<ul>
+        <li v-for="(fruit,index) in fruits">{{fruit}} {{index}}</li>
+    </ul>-->
+    <ul>
+        <li v-for="(fruit,parent) in fruits">{{parent+1}}.{{fruit.name}}
+            <ul>
+                <!--fruit是数组里的对象 取type数组再次循环-->
+                <li v-for="(t,child) in fruit.type">
+                    {{parent+1}}.{{child+1}}{{t}}
+                </li>
+            </ul>
+        </li>
+    </ul>
+    <ul>
+        <!--key 指的是对象中的键 不在是index索引了-->
+        <li v-for="(val,key) in school">{{val}} {{key}}</li>
+    </ul>
+    {{a.a}}
+</div>
+<script src="node_modules/vue/dist/vue.js"></script>
+<script>
+   //属性如果没有声明 则不能取
+   //如果对象中没有此属性后加的，则不支持数据绑定的，数据改变视图也不会刷新
+   //可以用新的属性替换掉老的可以实现后添加属性,$set也可以实现后添加属性 vm.$set(vm.a,'a',1)
+   //“库”和“框架”区别
+    let vm =  new Vue({
+        el: '#app',
+        data: {
+            a:{},
+            fruits: [
+                    {name: '香蕉', type: ['黄色', '绿色']},
+                    {name: '西瓜', type: ['红色']},
+                    {name: '哈密瓜', type: ['白色', '黄色']},
+            ],
+            school:{address:'回龙观',name:'zfpx',age:8}
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .active{color:red}
+        /*当激活时生效 / /list /add 这个/永远会生效*/
+        /*.router-link-active{
+            color:red
+        }*/
+        /*只有当路径和/ 相同时才会触发/生效 */
+        /*.router-link-exact-active{
+            color:blue
+        }*/
+    </style>
+</head>
+<body>
+<div id="app">
+    <!--router-link必须要有to属性-->
+    <router-link to="/home" tag="span">首页</router-link>
+    <router-link to="/list" tag="span">列表页</router-link>
+    <!--用来渲染路由中的组件-->
+    <router-view></router-view>
+</div>
+<script src="node_modules/vue/dist/vue.js"></script>
+<script src="node_modules/vue-router/dist/vue-router.js"></script>
+<script>
+    //2. 配一个路由映射表
+    let Home = {template:'<div>Home</div>'};
+    let List = {template:'<div>List</div>'};
+    const routes = [
+        {path:'/home',component:Home},
+        {path:'/list',component:List}
+    ];
+    //1. 先要构建一个路由容器 VueRouter
+    const router = new VueRouter({ //默认路由就是hash规格的
+        routes,
+        linkActiveClass:'active' //更改激活时的样式名
+        // mode:'history' // history.pushState
+    });
+    //3. 使用这个路由
+    let vm = new Vue({
+        el:'#app',
+        router //将router引入到实例中 会在实例上提供两个属性 this.$route(属性) this.$router(方法)
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+<div id="app">
+    <div @click="parent">parent
+        <div @click.self.stop="son">son
+            <div @click="grandson">grandson</div>
+        </div>
+    </div>
+    <a href="http://www.baidu.com" @click.prevent>去百度</a>
+</div>
+<script src="node_modules/vue/dist/vue.js"></script>
+<!--事件后面可以加一些常用的“修饰符” keyup.enter
+    阻止冒泡 阻止默认事件 只在自己身上触发  事件捕获
+    事件的行文默认是冒泡 从内往外
+    .stop  代表阻止冒泡
+    .capture 表示事件捕获 先捕获 -> 在到目标 -> 在到冒泡
+    .self 表示只在自己身上触发
+    .prevent 阻止默认事件
+    .键盘事件  修饰符可以连续调用
+-->
+<script>
+    let vm = new Vue({
+        el:'#app',
+        methods:{
+            grandson(){
+                alert('grandson')
+            },
+            son(){
+                alert('son');
+            },
+            parent(){
+                alert('parent')
+            }
+        }
+    })
+</script>
+</body>
+</html>

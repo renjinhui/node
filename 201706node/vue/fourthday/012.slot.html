@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="app">
+    <hello>
+        123
+        <ul slot="bottom">
+            <li>我很帅</li>
+            <li>我很年轻</li>
+        </ul>
+        <ul slot="top">
+            <li>你丑</li>
+        </ul>
+        456
+    </hello>
+</div>
+<template id="hello">
+    <div>你好
+        <!--slot是vue提供的内置插件，具名slot 在写内容时第一预留出来slot插口,如果没有使用则使用默认内容，没有指定slot名字的都叫default 会塞到name=default的组件内-->
+        <slot name="default">nihao </slot>
+        <slot name="top">这是上</slot>
+        <slot name="bottom">这是下</slot>
+    </div>
+</template>
+<script src="node_modules/vue/dist/vue.js"></script>
+<script>
+    let vm = new Vue({
+        el:'#app',
+        components:{
+            hello:{
+                template:'#hello'
+            }
+        }
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="app">
+    <!--to可以传递字符串 也可以传递对象-->
+    <!--如果使用动态绑定 而且有params 必须要给路由增加名字 通过名字跳转-->
+    <router-link v-for="article in articles"
+                 :to="{name:'zfpx',params:{id:article.id}}" tag="div">{{article.title}}</router-link>
+    <router-view></router-view>
+</div>
+<!--路径参数 /article/1   /article?id=1-->
+<script src="node_modules/vue/dist/vue.js"></script>
+<script src="node_modules/vue-router/dist/vue-router.js"></script>
+<script>
+    let Article = {
+        template:'<div>这是第 {{id}} 文章</div>',
+        computed:{
+            id(){return this.$route.params.id},
+        }
+    };
+    let E = {template:'<div>请选择文章</div>'}
+    let router = new VueRouter({
+        routes:[
+//            路径不能写死 应该是可变的 :id必须传递参数 但是内容是可以随机的
+            //会将当前冒号后的值 和真实传递的值组成一个对象 this.$route.params = {id:123,name:123}
+            {path:'',component:E}, //默认路由 相当于配置了一个/
+            {path:'/article/:id',component:Article,name:'zfpx'},
+//          {path:'*',component:E}, //这个路径不会发生改变
+//          {path:'*',redirect:'/article/1'} 一般用作404 会导致路径改变
+        ],
+    });
+    let vm = new Vue({
+        el:"#app",
+        data:{
+          articles:[
+              {title:'react文章',id:1},
+              {title:'vue文章',id:2},
+              {title:'angular文章',id:3}]
+        },
+        router
+    })
+</script>
+</body>
+
+</html>

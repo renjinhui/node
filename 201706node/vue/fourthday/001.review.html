@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="app"></div>
+<script src="node_modules/vue/dist/vue.js"></script>
+<script>
+    let vm = new Vue({
+        beforeCreated(){},
+        el:'#app',//指定数据范围的元素
+        data:{},//定义数据的地方，实例会代理这个数据
+        methods:{},//一些事件和方法
+        created(){}, //事件和数据初始化后执行created方法
+        template:'', //如果有模板使用模板中的内容进行编译
+        beforeMount(){},//挂载之前
+        mounted(){},//用数据和视图渲染完成的事件
+        computed:{}, //计算属性
+        beforeUpdate(){}, //页面上的数据变化会处罚update方法
+        updated(){},
+        watch:{},//用来监控数据变化的
+        beforeDestroy(){},
+        destroyed(){},
+        directives:{},//自定义指令
+        filters:{}, //自定义过滤器，
+        a:1
+    });
+    console.log(vm.$options); //可以获取自定义属性
+</script>
+</body>
+</html>

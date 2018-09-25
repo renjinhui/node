@@ -1,0 +1,1 @@
+console.log('/index.min.CSS'.match(/\.\w+$/)[0]);

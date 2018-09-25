@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!--服务端中html引用路径不支持../ 或者./-->
+    <link rel="stylesheet" href="/index.css">
+</head>
+<body>
+<!--每一秒去服务端获取下最新的时间 /clock-->
+<script>
+    //需要手动写请求头，基于promise
+    fetch('/clock',{
+        method:'get',
+        headers:{ //请求头
+            accept:'application/json' //接受的数据期望是json类型
+        }
+        //res.json()返回的依然是一个promise对象，会将resolve结果传到下一个then中
+    })
+    .then( res=>res.json())
+    .then(data=>{
+        document.write(data.time);
+    });
+</script>
+</body>
+</html>

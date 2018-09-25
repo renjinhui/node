@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!--原生js中绑定事件在行内时需要加括号 需要事件源需要传递event-->
+<!--在vue中事件要使用v-on进行绑定绑定的方法需要写在methods内部，所有this指向的都是当前实例,如果传递参数需要事件源需要传入$event 事件可以使用@来替换掉v-on属性,data中的名字和method中不能相同-->
+<div id="app">
+    <input type="text" v-model="msg" @keyup.enter="add">
+    <ul>
+        <li v-for="a in arrs">{{a}}</li>
+    </ul>
+    <!--<button @click="fn($event)" >点我啊</button>-->
+    <!-- v-show  控制的是样式 v-if 控制的结构 如果频繁切换显示隐藏最好用v-show,if如果不满足dom不会渲染-->
+    <div v-if="arrs.length>=3">
+        已经有三条了
+    </div>
+</div>
+<script src="node_modules/vue/dist/vue.js"></script>
+<script>
+    let vm = new Vue({
+        el:'#app',
+        data:{
+            msg:'',
+            arrs:[]
+        },
+        methods:{//存放着所有的方法
+            add(e){
+                this.arrs.push(this.msg);
+                this.msg = ''
+            }
+           /* fn(e){
+                //所有方法中的this指向的都是当前实例
+                console.log(e)
+            }*/
+        }
+    })
+</script>
+</body>
+</html>
