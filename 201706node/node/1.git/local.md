@@ -22,7 +22,7 @@
 ## 使用git
 - 没有配置过用户，不能提交代码
 ```
-$ git config --list
+$ git config --list              git config --list
 ```
 配置使用git的用户
 ```
